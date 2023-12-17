@@ -13,14 +13,25 @@ let calc_integers_in_between_two_floats (lower, upper) =
   let upper = if Float.is_integer upper then upper -. 1. else upper in
   (int_of_float @@ Float.round_down upper) - (int_of_float @@ Float.round_up lower) + 1;;
 
+let solve1 xs =
+  xs 
+  |> List.map ~f:(fun (t, d) -> roots (float_of_string t) (float_of_string d))
+  |> List.map ~f:(calc_integers_in_between_two_floats)
+  |> List.fold ~init:1 ~f:( * )
+
+let solve2 times dists = 
+  let times_con = String.concat ~sep:"" times in
+  let dists_con = String.concat ~sep:"" dists in
+  let r = roots (float_of_string times_con) (float_of_string dists_con) in
+  calc_integers_in_between_two_floats r
+
 let () =  
   match Core.In_channel.read_lines "input-1.txt" with
     | [timeStr; distStr] -> 
         let times = matcher timeStr in
         let dists = matcher distStr in
-        List.zip_exn times dists 
-        |> List.map ~f:(fun (t, d) -> roots (float_of_string t) (float_of_string d))
-        |> List.map ~f:(calc_integers_in_between_two_floats)
-        |> List.fold ~init:1 ~f:( * )
-        |> Printf.printf "%d\n"
+        let sol1 = solve1 @@ List.zip_exn times dists in
+        let sol2 = solve2 times dists in
+        Printf.printf "Sol1: %d\n" sol1;
+        Printf.printf "Sol2: %d\n" sol2;
     | _ -> failwith "Invalid input";;
