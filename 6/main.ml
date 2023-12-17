@@ -2,10 +2,11 @@ open Core
 let matcher str = 
   Re.matches (Re.compile @@ Re.rep1 Re.digit) str;;
 
+let (+-) x y = (x +. y, x -. y)
+
 let roots time dist = 
   let delta = (time *. time) -. (4. *. dist) in
-  let nom1 = time -. (sqrt delta) in
-  let nom2 = time +. (sqrt delta) in
+  let (nom2, nom1) = (+-) time (sqrt delta)  in
   (nom1 /. 2., nom2 /. 2.);;
 
 let calc_integers_in_between_two_floats (lower, upper) = 
